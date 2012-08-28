@@ -3,7 +3,7 @@
 # Filename      tests.py
 # Author        Lasse Vang Gravesen <gravesenlasse@gmail.com>
 # First edited  28-08-2012 01:57
-# Last edited   28-08-2012 02:59
+# Last edited   28-08-2012 06:01
 
 import unittest
 from lxml_requests import *
@@ -12,7 +12,7 @@ class TestLxmlRequests(unittest.TestCase):
 
     def setUp(self):
         """Setup the objects."""
-        self.html_site      = requests.html("https://www.google.dk/")
+        self.html_site      = requests.html("https://en.wikipedia.org/wiki/Main_Page")
         self.xml_site       = requests.xml("http://apps.welpyourcall.com/files/example.xml")
         self.html_string    = requests.html_tostring(self.html_site)
         self.xml_string     = requests.xml_tostring(self.xml_site)
@@ -26,8 +26,8 @@ class TestLxmlRequests(unittest.TestCase):
 
     def test_checkContent(self):
         """Check that the objects are not None or of length 0."""
-        self.assertIsNotNone(self.html_site.xpath('//button/@aria-label'))
-        self.assertIsNotNone(self.xml_site.xpath('//thread/@id'))
+        self.assertTrue(len(self.html_site.xpath('//li[@class="selected"]')) > 0)
+        self.assertTrue(len(self.xml_site.xpath('//thread/@id')) > 0)
         self.assertTrue(len(self.html_string) > 0)
         self.assertTrue(len(self.xml_string) > 0)
 
@@ -42,8 +42,8 @@ class TestLxmlRequests(unittest.TestCase):
 
     def test_lxmlNamespace(self):
         """Check that the requests.lxml.* namespacing works."""
-        self.assertIsNotNone(requests.lxml.html.fromstring(requests.get("https://www.google.dk/").text))
-        self.assertIsNotNone(requests.lxml.etree.fromstring(requests.get("http://apps.welpyourcall.com/files/example.xml").text))
+        self.assertIsInstance(requests.lxml.html.fromstring(requests.get("https://en.wikipedia.org/wiki/Main_Page").text), requests.lxml.html.HtmlElement)
+        self.assertIsInstance(requests.lxml.etree.fromstring(requests.get("http://apps.welpyourcall.com/files/example.xml").text), requests.lxml.etree._Element)
 
 suite = unittest.TestLoader().loadTestsFromTestCase(TestLxmlRequests)
 unittest.TextTestRunner(verbosity=3).run(suite)
