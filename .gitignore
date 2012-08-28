@@ -4,6 +4,7 @@
 *.cfg
 *.json
 *.html
+*.xml
 *.log
 output/*
 
